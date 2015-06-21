@@ -8,13 +8,15 @@
 
 #import <UIKit/UIKit.h>
 
-#define POINT_NUM 50
-#define POINT_KNUM 4
+#define POINT_NUM 100
+#define POINT_KNUM 5
+#define THRESHOLD 1
 
 @interface MyPoint : NSObject
 
-@property (nonatomic) int x;
-@property (nonatomic) int y;
+@property (nonatomic) double x;
+@property (nonatomic) double y;
+@property (nonatomic) int closestSeedIndex;
 @property (strong, nonatomic) UIColor *color;
 
 @end
@@ -23,5 +25,6 @@
 
 @property (strong, nonatomic) NSMutableArray *pointArray;
 @property (strong, nonatomic) NSMutableArray *KPointArray;
+@property (nonatomic) BOOL ifNeedDrawLine;
 
 @end
