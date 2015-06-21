@@ -7,7 +7,6 @@
 //
 
 #import "ViewController.h"
-#import "Masonry.h"
 #import "MyView.h"
 
 @interface ViewController ()
@@ -15,6 +14,7 @@
 @property (weak, nonatomic) MyView *coordinateView;
 @property (weak, nonatomic) UIButton *initialButton;
 @property (weak, nonatomic) UIButton *beginButton;
+@property (weak, nonatomic) UILabel *progressInfoLabel;
 @end
 
 @implementation ViewController {
@@ -60,10 +60,17 @@
     [beginButton addTarget:self action:@selector(beginKmeans) forControlEvents:UIControlEventTouchUpInside];
     _beginButton = beginButton;
     
+    UILabel *progressInfoLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 520, self.view.bounds.size.width, 50)];
+    progressInfoLabel.text = [NSString stringWithFormat:@"k = %i", POINT_KNUM];
+    progressInfoLabel.textAlignment = NSTextAlignmentCenter;
+    progressInfoLabel.numberOfLines = 0;
+    _progressInfoLabel = progressInfoLabel;
+    
     [self.view addSubview:_titleLabel];
     [self.view addSubview:_coordinateView];
     [self.view addSubview:_initialButton];
     [self.view addSubview:_beginButton];
+    [self.view addSubview:_progressInfoLabel];
     
     
 }
@@ -83,6 +90,7 @@
     
     _coordinateView.ifNeedDrawLine = false;
     [_coordinateView setNeedsDisplay];
+    _progressInfoLabel.text = [NSString stringWithFormat:@"已随机在平面生成%i个点(红色)", POINT_NUM];
 }
 
 /**
@@ -91,20 +99,44 @@
 - (void)beginKmeans {
     srand((unsigned int)time(NULL));
     [self chooseInitSeeds];
-    int TCount = 0;
-    while (true) {
-        ++TCount;
-        NSLog(@"%i", TCount);
-        [self caculateDistToSeed];
-        [self caculateNewSeed];
-        if ([self ifShouldEnd]) {
-            break;
-        } else {
-            [self updateOldSeed];
-        }
-    }
+    [self caculateDistToSeed];
     [_coordinateView setNeedsDisplay];
-    
+    _progressInfoLabel.text = [NSString stringWithFormat:@"已选取较优的%i个初始种子点", POINT_KNUM];
+    [self performSelector:@selector(circuCaculate) withObject:nil afterDelay:2];
+}
+
+//- (void)beginKmeans {
+//    srand((unsigned int)time(NULL));
+//    [self chooseInitSeeds];
+//    int TCount = 0;
+//    while (true) {
+//        ++TCount;
+//        [self caculateDistToSeed];
+//        [self caculateNewSeed];
+//        if ([self ifShouldEnd]) {
+//            break;
+//        } else {
+//            [self updateOldSeed];
+//        }
+//    }
+//    [_coordinateView setNeedsDisplay];
+//}
+
+
+- (void)circuCaculate {
+    static int TCount = 0;
+    ++TCount;
+    [self caculateDistToSeed];
+    [self caculateNewSeed];
+    [_coordinateView setNeedsDisplay];
+    _progressInfoLabel.text = [NSString stringWithFormat:@"第%i次坐标优化", TCount];
+    if ([self ifShouldEnd]) {
+        _progressInfoLabel.text = [NSString stringWithFormat:@"第%i次坐标优化\n算法完成，偏差值小于阈值%f", TCount, THRESHOLD];
+        TCount = 0;
+    } else {
+        [self updateOldSeed];
+        [self performSelector:@selector(circuCaculate) withObject:nil afterDelay:1];
+    }
 }
 
 #pragma mark - K-means辅助函数

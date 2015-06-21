@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-#define POINT_NUM 100
+#define POINT_NUM 200
 #define POINT_KNUM 5
-#define THRESHOLD 0.001
+#define THRESHOLD 0.0001
 
 @interface MyPoint : NSObject
 
