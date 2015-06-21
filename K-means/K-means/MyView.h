@@ -10,7 +10,7 @@
 
 #define POINT_NUM 100
 #define POINT_KNUM 5
-#define THRESHOLD 1
+#define THRESHOLD 0.001
 
 @interface MyPoint : NSObject
 

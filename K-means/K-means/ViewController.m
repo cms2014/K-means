@@ -80,6 +80,8 @@
         curPoint.x = 10+rand() % maxWidth;
         curPoint.y = 10+rand() % maxWidth;
     }
+    
+    _coordinateView.ifNeedDrawLine = false;
     [_coordinateView setNeedsDisplay];
 }
 
@@ -162,6 +164,8 @@
 
 /**
  * 计算两点之间的距离
+ * @param first 第一个点
+ * @param second 第二个点
  */
 - (double)distFromAPoint:(MyPoint *)first toAnotherPoint:(MyPoint *)second {
     double distance = sqrt(pow((first.x - second.x), 2) + pow((first.y - second.y), 2.0));
@@ -221,7 +225,7 @@
 }
 
 /**
- *
+ * 判断算法是否应该停止，种子点相比于上一次的种子点的偏移量是否小于既定阈值
  */
 - (BOOL)ifShouldEnd {
     int i;
@@ -239,6 +243,9 @@
     return true;
 }
 
+/**
+ * 更新旧种子点坐标数组。
+ */
 - (void)updateOldSeed {
     int i;
     MyPoint *seedPoint;
